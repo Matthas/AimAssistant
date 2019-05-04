@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">AimAssistant</string>
+    <string name="TypeOfMissile">Wybierz Rodzaj Pocisku</string>
+    <string name="missile1">M383/M384</string>
+    <string name="missile2">M43I</string>
+    <string name="missile3">M385I/M918</string>
+    <string name="missile4">M922/M922A1</string>
+    <string name="calibration">Skalibruj Poziom</string>
+    <string name="backbutton">WSTECZ</string>
+    <string name="typedistancetotarged">WPISZ ODLEGŁOŚĆ DO CELU</string>
+    <string name="highshot">Strzał Ukośny</string>
+    <string name="lowshot">Strzał Prosty</string>
+    <string name="infantry">PIECHOTA</string>
+    <string name="base">OBÓZ</string>
+    <string name="infantryvehicle">POJAZD</string>
+    <string name="armoredvehicle">POJAZD UZBROJONY</string>
+    <string name="settingsfinal">WYBRANO USTAWIENIA:</string>
+    <string name="next">DALEJ</string>
+    <string name="targetangle">WYMAGANY KĄT</string>
+    <string name="currentangle">AKTUALNY KĄT</string>
+    <string name="nextshot">NASTEPNY STRZAŁ</string>
+</resources>
