@@ -8,16 +8,22 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
+
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -38,6 +44,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     ConsumerIrManager mCIR;
     private SensorManager mgr;
 
+    private int viewmode = 0;    //zmienna odpowiedzialna za tryp ciemny[0]/jasny[1]
     public int freq = 899;       //czas trwania polbitu IR, 899us dla standardu RC5
     private int tdetonator;      //czas opoznienia zapalnika [s]
     private int distance;        //odleglosc do celu         [m]
@@ -66,6 +73,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         //wywolanie elementow layoutow
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         LinearLayout mLayoutMainmenu = findViewById(R.id.layout_main_menu);
         LinearLayout mLayoutTargetSettings = findViewById(R.id.layout_target_settings);
         LinearLayout mLayoutFinalScreen = findViewById(R.id.layout_final_screen);
@@ -88,6 +96,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         findViewById(R.id.nextshot).setOnClickListener(mNextshot);
         mIRdatashow = (TextView) findViewById(R.id.IRdatashow);
         mDistanceIn = (EditText) findViewById(R.id.distanceIn);
+        findViewById(R.id.buttonviewchange).setOnClickListener(mModechange);
         //wywolanie funkcji sprawdzajacej wprowadzenie wszystkich danych przy kazdej zmiane wartosci
         //odleglosci
         mDistanceIn.addTextChangedListener(new TextWatcher() {
@@ -114,7 +123,126 @@ public class MainActivity extends Activity implements SensorEventListener {
             Log.d(TAG, "Brak IR blaster\n");
             Toast.makeText(this, "Hardware compatibility issue", Toast.LENGTH_LONG).show();
         }
+        viewmodeswitch();
     }
+
+    View.OnClickListener mModechange = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (viewmode == 1 ){
+                viewmode = 0;
+            } else {
+                viewmode = 1;
+            }
+
+            viewmodeswitch();
+        }
+    };
+
+    //==============funkcja odpowiedzialna za tryp Ciemny/jasny===================
+    void viewmodeswitch() {
+        if (viewmode == 1) {   //lightmode
+            //main menu
+            ((Button) findViewById(R.id.buttonviewchange)).setText(getResources().getText(R.string.modedark));
+            ((LinearLayout) findViewById(R.id.layout_main_menu)).setBackgroundColor(getResources().getColor(R.color.white)); //tlo
+            ((TextView) findViewById(R.id.CurrentAngleMain)).setTextColor(getResources().getColor(R.color.black));            //Aktualny kat
+            //main menu
+
+            //targetsettings
+            ((LinearLayout) findViewById(R.id.layout_target_settings)).setBackgroundColor(getResources().getColor(R.color.white)); //tlo
+            ((TextView) findViewById(R.id.CurrentAngleSettings)).setTextColor(getResources().getColor(R.color.black));           //Aktualny kat
+            ((Button) findViewById(R.id.backbuttonsettingsmenu)).setTextColor(getResources().getColor(R.color.black));           //przycisk wstecz Text
+            ((Button) findViewById(R.id.backbuttonsettingsmenu)).setBackgroundColor(getResources().getColor(R.color.grey));      //przycisk wstecz Tlo
+            ((TextView) findViewById(R.id.typedistancetotarged)).setTextColor(getResources().getColor(R.color.black));           //wpisz odleglosc do celu TEXT color
+            ((EditText) findViewById(R.id.distanceIn)).setBackgroundColor(getResources().getColor(R.color.white));                //pole wpisywania odleglosci TLO
+            ((EditText) findViewById(R.id.distanceIn)).setTextColor(getResources().getColor(R.color.black));                     //pole wpisywania odleglosci Kolor tekstu
+            ((TextView) findViewById(R.id.distanceInUnit)).setTextColor(getResources().getColor(R.color.black));                 //pole z jednostka "m"
+            ((TextView) findViewById(R.id.highshotText)).setTextColor(getResources().getColor(R.color.black));                   //strzal za zaslony Text color
+            ((ImageButton) findViewById(R.id.highshot)).setImageResource(R.drawable.highshot);                                   //strzal za zaslony Icona
+            ((TextView) findViewById(R.id.lowshowText)).setTextColor(getResources().getColor(R.color.black));                    //strzal prosty Text color
+            ((ImageButton) findViewById(R.id.lowshot)).setImageResource(R.drawable.lowshot);                               //strzal prosty Icona
+            ((Button) findViewById(R.id.targettype1)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.piechota,0,0,0);  //target 1 obrazek
+            ((Button) findViewById(R.id.targettype1)).setBackgroundColor(getResources().getColor(R.color.white));                                   //target 1 tlo
+            ((Button) findViewById(R.id.targettype1)).setTextColor(getResources().getColor(R.color.black));                                         //target 1 text
+            ((Button) findViewById(R.id.targettype2)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.base,0,0,0);      //target 2 obrazek
+            ((Button) findViewById(R.id.targettype2)).setBackgroundColor(getResources().getColor(R.color.white));                                   //target 2 tlo
+            ((Button) findViewById(R.id.targettype2)).setTextColor(getResources().getColor(R.color.black));                                         //target 2 text
+            ((Button) findViewById(R.id.targettype3)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.infantryvehicle,0,0,0);  //target 3 obrazek
+            ((Button) findViewById(R.id.targettype3)).setBackgroundColor(getResources().getColor(R.color.white));                                   //target 3 tlo
+            ((Button) findViewById(R.id.targettype3)).setTextColor(getResources().getColor(R.color.black));                                         //target 3 text
+            ((Button) findViewById(R.id.targettype4)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.armoredvehicle,0,0,0);  //target 4 obrazek
+            ((Button) findViewById(R.id.targettype4)).setBackgroundColor(getResources().getColor(R.color.white));                                   //target 4 tlo
+            ((Button) findViewById(R.id.targettype4)).setTextColor(getResources().getColor(R.color.black));                                         //target 4 text
+            ((TextView) findViewById(R.id.settingsfinal)).setTextColor(getResources().getColor(R.color.black));                 //wybrano ustawienia
+            ((TextView) findViewById(R.id.trajectorytypeshow)).setTextColor(getResources().getColor(R.color.black));                 //wybor kata strzalu
+            ((TextView) findViewById(R.id.targettypeshow)).setTextColor(getResources().getColor(R.color.black));                 //wybrano typu celu
+            //targetsettings
+
+            //final screen
+            ((LinearLayout) findViewById(R.id.layout_final_screen)).setBackgroundColor(getResources().getColor(R.color.white));  //tlo
+            ((TextView) findViewById(R.id.targetangletext)).setTextColor(getResources().getColor(R.color.black));               //wymagany kat text
+            ((TextView) findViewById(R.id.targetangle)).setTextColor(getResources().getColor(R.color.black));                   //wymagany kat
+            ((TextView) findViewById(R.id.currentangletext)).setTextColor(getResources().getColor(R.color.black));                   //aktualny kat
+            //aktualny kat kat nie wymagane
+            ((TextView) findViewById(R.id.IRdatashow)).setTextColor(getResources().getColor(R.color.black));                    //ramka IR
+
+
+            //final screen
+        } else {  //darkmode
+            //main menu
+            ((Button) findViewById(R.id.buttonviewchange)).setText(getResources().getText(R.string.modelight));
+            ((LinearLayout) findViewById(R.id.layout_main_menu)).setBackgroundColor(getResources().getColor(R.color.black)); //tlo
+            ((TextView) findViewById(R.id.CurrentAngleMain)).setTextColor(getResources().getColor(R.color.white));           //Aktualny kat
+            //main menu
+
+            //targetsettings
+            ((LinearLayout) findViewById(R.id.layout_target_settings)).setBackgroundColor(getResources().getColor(R.color.black)); //tlo
+            ((TextView) findViewById(R.id.CurrentAngleSettings)).setTextColor(getResources().getColor(R.color.white));           //Aktualny kat
+            ((Button) findViewById(R.id.backbuttonsettingsmenu)).setTextColor(getResources().getColor(R.color.white));           //przycisk wstecz Text
+            ((Button) findViewById(R.id.backbuttonsettingsmenu)).setBackgroundColor(getResources().getColor(R.color.grey));      //przycisk wstecz Tlo
+            ((TextView) findViewById(R.id.typedistancetotarged)).setTextColor(getResources().getColor(R.color.white));           //wpisz odleglosc do celu TEXT color
+            ((EditText) findViewById(R.id.distanceIn)).setBackgroundColor(getResources().getColor(R.color.grey));                //pole wpisywania odleglosci TLO
+            ((EditText) findViewById(R.id.distanceIn)).setTextColor(getResources().getColor(R.color.white));                     //pole wpisywania odleglosci Kolor tekstu
+            ((TextView) findViewById(R.id.distanceInUnit)).setTextColor(getResources().getColor(R.color.white));                 //pole z jednostka "m"
+            ((TextView) findViewById(R.id.highshotText)).setTextColor(getResources().getColor(R.color.white));                   //strzal za zaslony Text color
+            ((ImageButton) findViewById(R.id.highshot)).setImageResource(R.drawable.hightshot_black);                            //strzal za zaslony Icona
+            ((TextView) findViewById(R.id.lowshowText)).setTextColor(getResources().getColor(R.color.white));                    //strzal prosty Text color
+            ((ImageButton) findViewById(R.id.lowshot)).setImageResource(R.drawable.lowshot_black);                               //strzal prosty Icona
+            ((Button) findViewById(R.id.targettype1)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.piechota_black,0,0,0);  //target 1 obrazek
+            ((Button) findViewById(R.id.targettype1)).setBackgroundColor(getResources().getColor(R.color.black));                                   //target 1 tlo
+            ((Button) findViewById(R.id.targettype1)).setTextColor(getResources().getColor(R.color.white));                                         //target 1 text
+            ((Button) findViewById(R.id.targettype2)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.base_black,0,0,0);      //target 2 obrazek
+            ((Button) findViewById(R.id.targettype2)).setBackgroundColor(getResources().getColor(R.color.black));                                   //target 2 tlo
+            ((Button) findViewById(R.id.targettype2)).setTextColor(getResources().getColor(R.color.white));                                         //target 2 text
+            ((Button) findViewById(R.id.targettype3)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.infantryvehicle_black,0,0,0);  //target 3 obrazek
+            ((Button) findViewById(R.id.targettype3)).setBackgroundColor(getResources().getColor(R.color.black));                                   //target 3 tlo
+            ((Button) findViewById(R.id.targettype3)).setTextColor(getResources().getColor(R.color.white));                                         //target 3 text
+            ((Button) findViewById(R.id.targettype4)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.armoredvehicle_black,0,0,0);  //target 4 obrazek
+            ((Button) findViewById(R.id.targettype4)).setBackgroundColor(getResources().getColor(R.color.black));                                   //target 4 tlo
+            ((Button) findViewById(R.id.targettype4)).setTextColor(getResources().getColor(R.color.white));                                         //target 4 text
+            ((TextView) findViewById(R.id.settingsfinal)).setTextColor(getResources().getColor(R.color.white));                 //wybrano ustawienia
+            ((TextView) findViewById(R.id.trajectorytypeshow)).setTextColor(getResources().getColor(R.color.white));                 //wybor kata strzalu
+            ((TextView) findViewById(R.id.targettypeshow)).setTextColor(getResources().getColor(R.color.white));                 //wybrano typu celu
+            //targetsettings
+
+            //final screen
+            ((LinearLayout) findViewById(R.id.layout_final_screen)).setBackgroundColor(getResources().getColor(R.color.black));  //tlo
+            ((TextView) findViewById(R.id.targetangletext)).setTextColor(getResources().getColor(R.color.white));               //wymagany kat text
+            ((TextView) findViewById(R.id.targetangle)).setTextColor(getResources().getColor(R.color.white));                   //wymagany kat
+            ((TextView) findViewById(R.id.currentangletext)).setTextColor(getResources().getColor(R.color.white));                   //aktualny kat
+            //aktualny kat kat nie wymagane
+            ((TextView) findViewById(R.id.IRdatashow)).setTextColor(getResources().getColor(R.color.white));                    //ramka IR
+
+            //final screen
+
+        }
+    }
+
+
+    //==============funkcja odpowiedzialna za tryp Ciemny/jasny===================
+
+
+
 
     //==========przyciski menu glownego===============
     //==========przyciski menu glownego===============

@@ -19,4 +19,6 @@
     <string name="targetangle">WYMAGANY KĄT</string>
     <string name="currentangle">AKTUALNY KĄT</string>
     <string name="nextshot">NASTEPNY STRZAŁ</string>
+    <string name="modedark">Tryb Ciemny</string>
+    <string name="modelight">Tryb Jasny</string>
 </resources>

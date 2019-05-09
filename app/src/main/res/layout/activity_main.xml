@@ -11,20 +11,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:background="@color/black"
+        android:visibility="gone">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="25dp">
             <TextView
+                android:id="@+id/targetangletext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 android:text="@string/targetangle"
                 android:textSize="35sp"
                 android:gravity="center_horizontal"/>
             <TextView
                 android:id="@+id/targetangle"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="100sp"
@@ -34,6 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="50dp"
+                android:textColor="@color/white"
                 android:gravity="center_horizontal"
                 android:text="@string/currentangle"
                 android:textSize="45sp"/>
@@ -43,12 +48,14 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="15dp"
                 android:gravity="center_horizontal"
+                android:textColor="@color/white"
                 android:text="56"
                 android:textSize="150sp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/IRdatashow"
+                android:textColor="@color/white"
                 android:gravity="center_horizontal" />
         </LinearLayout>
         <LinearLayout
@@ -62,6 +69,7 @@
                 android:layout_width="250dp"
                 android:layout_height="100dp"
                 android:textSize="30sp"
+                android:textColor="@color/black"
                 android:text="@string/nextshot" />
 
         </LinearLayout>
@@ -78,8 +86,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
-
+        android:visibility="visible">
+        <Button
+            android:id="@+id/buttonviewchange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="TryBCiemny"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -156,7 +169,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:background="@color/black"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -175,9 +189,9 @@
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:textSize="40sp"
+                    android:textColor="@color/white"
                     android:gravity="top"
-                    android:layout_gravity="bottom"
-                    />
+                    android:layout_gravity="bottom"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -186,6 +200,7 @@
                 android:orientation="vertical">
                 <Button
                     android:id="@+id/backbuttonsettingsmenu"
+                    android:background="@color/grey"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
@@ -202,15 +217,34 @@
             android:gravity="center_horizontal"
             android:layout_marginTop="5dp">
             <TextView
+                android:id="@+id/typedistancetotarged"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 android:text="@string/typedistancetotarged"
                 android:textSize="25sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
             <EditText
                 android:id="@+id/distanceIn"
+                android:textColor="@color/white"
+                android:textSize="45sp"
+                android:textAlignment="viewEnd"
                 android:layout_width="150dp"
                 android:inputType="number"
+                android:background="@color/grey"
                 android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/distanceInUnit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="m"
+                    android:textSize="45sp"
+                    android:textColor="@color/white"/>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -225,6 +259,7 @@
                 android:orientation="vertical"
                 android:paddingStart="25dp">
                 <TextView
+                    android:id="@+id/highshotText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -245,6 +280,7 @@
                 android:orientation="vertical"
                 android:paddingRight="25dp">
                 <TextView
+                    android:id="@+id/lowshowText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
