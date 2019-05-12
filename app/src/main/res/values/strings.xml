@@ -8,7 +8,7 @@
     <string name="calibration">Skalibruj Poziom</string>
     <string name="backbutton">WSTECZ</string>
     <string name="typedistancetotarged">WPISZ ODLEGŁOŚĆ DO CELU</string>
-    <string name="highshot">Strzał Ukośny</string>
+    <string name="highshot">Strzał za zasłony</string>
     <string name="lowshot">Strzał Prosty</string>
     <string name="infantry">PIECHOTA</string>
     <string name="base">OBÓZ</string>
@@ -21,4 +21,5 @@
     <string name="nextshot">NASTEPNY STRZAŁ</string>
     <string name="modedark">Tryb Ciemny</string>
     <string name="modelight">Tryb Jasny</string>
+    <string name="maxrange">Maksymalny zasięg = </string>
 </resources>

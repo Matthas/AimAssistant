@@ -86,7 +86,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
         <Button
             android:id="@+id/buttonviewchange"
             android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:text="@string/missile1"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp" />
             <Button
                 android:id="@+id/missle2"
                 android:layout_width="250dp"
@@ -170,7 +170,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/black"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -245,6 +245,24 @@
                     android:textSize="45sp"
                     android:textColor="@color/white"/>
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+            <TextView
+                android:id="@+id/maxrangestatictext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/maxrange"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+             <TextView
+                android:id="@+id/maxrangetext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/white"/>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -264,14 +282,16 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@string/highshot"
-                    android:textSize="25sp"/>
+                    android:textSize="24sp"/>
                 <ImageButton
                     android:id="@+id/highshot"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside"
-                    android:src="@drawable/highshot"/>
+                    android:src="@drawable/highshot"
+
+                    />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -292,7 +312,8 @@
                     android:layout_height="80dp"
                     android:scaleType="centerInside"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/lowshot"/>
+                    android:src="@drawable/lowshot"
+                    />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -319,7 +340,7 @@
                 android:textAlignment="center"
                 android:textSize="25sp"
                 android:background="@color/white"
-                android:paddingTop="5dp"/>
+                android:paddingTop="5dp" />
             <Button
                 android:id="@+id/targettype2"
                 android:layout_width="match_parent"
@@ -357,33 +378,7 @@
                 android:background="@color/white"
                 android:paddingTop="5dp"/>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="15dp">
-            <TextView
-                android:id="@+id/settingsfinal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="@string/settingsfinal"
-                android:layout_gravity="center_horizontal"/>
-            <TextView
-                android:id="@+id/trajectorytypeshow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                android:textSize="15sp"
-                android:layout_gravity="center_horizontal"/>
-            <TextView
-                android:id="@+id/targettypeshow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                android:textSize="15sp"
-                android:layout_gravity="center_horizontal"/>
-        </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

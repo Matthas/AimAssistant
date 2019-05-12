@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Layout;
@@ -41,6 +42,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     TextView mDistanceIn;
     TextView mTargetAngle;
     TextView mIRdatashow;
+    TextView mMaxrangetext;
     ConsumerIrManager mCIR;
     private SensorManager mgr;
 
@@ -50,10 +52,11 @@ public class MainActivity extends Activity implements SensorEventListener {
     private int distance;        //odleglosc do celu         [m]
     private int targettype;      //rodzaj celu               [0-9]
     private int maxmissilerange; //maksymalny zasieg pocisku [m]
-    private int averagemissilespeed; //srednia predkosc pocisku  [m/s]
+    private double averagemissilespeed; //srednia predkosc pocisku  [m/s]
     private float calibratedangle=0; //zmienna potrzebna do kalibracji katu pochylenia
     private int curvetype=0;    //typ strzalu ukosny/prosty
     private int typeoftarget=0;    //rodzaj celu [1-4]
+    private double gravity = 9.81f;  //wartosc przyspieszenia ziemskiego
 
 
     private static final int SENSOR_DELAY = 100 * 1000; // 500ms
@@ -85,8 +88,8 @@ public class MainActivity extends Activity implements SensorEventListener {
         findViewById(R.id.backbuttonsettingsmenu).setOnClickListener(mBackbuttonsettingsmenu);
         findViewById(R.id.highshot).setOnClickListener(mHishshot);
         findViewById(R.id.lowshot).setOnClickListener(mLowshow);
-        mtrajectorytypeshow = (TextView) findViewById(R.id.trajectorytypeshow);
-        mtargettypeshow = (TextView) findViewById(R.id.targettypeshow);
+        //mtrajectorytypeshow = (TextView) findViewById(R.id.trajectorytypeshow);
+        //mtargettypeshow = (TextView) findViewById(R.id.targettypeshow);
         mTargetAngle = (TextView) findViewById(R.id.targetangle);
         findViewById(R.id.targettype1).setOnClickListener(mTargettype1);
         findViewById(R.id.targettype2).setOnClickListener(mTargettype2);
@@ -96,6 +99,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         findViewById(R.id.nextshot).setOnClickListener(mNextshot);
         mIRdatashow = (TextView) findViewById(R.id.IRdatashow);
         mDistanceIn = (EditText) findViewById(R.id.distanceIn);
+        mMaxrangetext = (TextView) findViewById(R.id.maxrangetext);
         findViewById(R.id.buttonviewchange).setOnClickListener(mModechange);
         //wywolanie funkcji sprawdzajacej wprowadzenie wszystkich danych przy kazdej zmiane wartosci
         //odleglosci
@@ -134,7 +138,6 @@ public class MainActivity extends Activity implements SensorEventListener {
             } else {
                 viewmode = 1;
             }
-
             viewmodeswitch();
         }
     };
@@ -154,7 +157,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             ((Button) findViewById(R.id.backbuttonsettingsmenu)).setTextColor(getResources().getColor(R.color.black));           //przycisk wstecz Text
             ((Button) findViewById(R.id.backbuttonsettingsmenu)).setBackgroundColor(getResources().getColor(R.color.grey));      //przycisk wstecz Tlo
             ((TextView) findViewById(R.id.typedistancetotarged)).setTextColor(getResources().getColor(R.color.black));           //wpisz odleglosc do celu TEXT color
-            ((EditText) findViewById(R.id.distanceIn)).setBackgroundColor(getResources().getColor(R.color.white));                //pole wpisywania odleglosci TLO
+            ((EditText) findViewById(R.id.distanceIn)).setBackgroundColor(getResources().getColor(R.color.grey));                //pole wpisywania odleglosci TLO
             ((EditText) findViewById(R.id.distanceIn)).setTextColor(getResources().getColor(R.color.black));                     //pole wpisywania odleglosci Kolor tekstu
             ((TextView) findViewById(R.id.distanceInUnit)).setTextColor(getResources().getColor(R.color.black));                 //pole z jednostka "m"
             ((TextView) findViewById(R.id.highshotText)).setTextColor(getResources().getColor(R.color.black));                   //strzal za zaslony Text color
@@ -173,9 +176,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             ((Button) findViewById(R.id.targettype4)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.armoredvehicle,0,0,0);  //target 4 obrazek
             ((Button) findViewById(R.id.targettype4)).setBackgroundColor(getResources().getColor(R.color.white));                                   //target 4 tlo
             ((Button) findViewById(R.id.targettype4)).setTextColor(getResources().getColor(R.color.black));                                         //target 4 text
-            ((TextView) findViewById(R.id.settingsfinal)).setTextColor(getResources().getColor(R.color.black));                 //wybrano ustawienia
-            ((TextView) findViewById(R.id.trajectorytypeshow)).setTextColor(getResources().getColor(R.color.black));                 //wybor kata strzalu
-            ((TextView) findViewById(R.id.targettypeshow)).setTextColor(getResources().getColor(R.color.black));                 //wybrano typu celu
+            ((TextView) findViewById(R.id.maxrangetext)).setTextColor((getResources().getColor(R.color.black)));
+            ((TextView) findViewById(R.id.maxrangestatictext)).setTextColor((getResources().getColor(R.color.black)));
             //targetsettings
 
             //final screen
@@ -220,9 +222,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             ((Button) findViewById(R.id.targettype4)).setCompoundDrawablesWithIntrinsicBounds(R.drawable.armoredvehicle_black,0,0,0);  //target 4 obrazek
             ((Button) findViewById(R.id.targettype4)).setBackgroundColor(getResources().getColor(R.color.black));                                   //target 4 tlo
             ((Button) findViewById(R.id.targettype4)).setTextColor(getResources().getColor(R.color.white));                                         //target 4 text
-            ((TextView) findViewById(R.id.settingsfinal)).setTextColor(getResources().getColor(R.color.white));                 //wybrano ustawienia
-            ((TextView) findViewById(R.id.trajectorytypeshow)).setTextColor(getResources().getColor(R.color.white));                 //wybor kata strzalu
-            ((TextView) findViewById(R.id.targettypeshow)).setTextColor(getResources().getColor(R.color.white));                 //wybrano typu celu
+            ((TextView) findViewById(R.id.maxrangetext)).setTextColor((getResources().getColor(R.color.white)));
+            ((TextView) findViewById(R.id.maxrangestatictext)).setTextColor((getResources().getColor(R.color.white)));
             //targetsettings
 
             //final screen
@@ -257,6 +258,16 @@ public class MainActivity extends Activity implements SensorEventListener {
         mLayoutTargetSettings.setVisibility(View.VISIBLE);
     };
     //======funkcja wlaczajaca menu ustawien strzalu============
+
+    //funkcja obliczenia maksymalnego zasiegu
+    void calculatemaxrange() {
+        double maxrange;
+        maxrange = averagemissilespeed*averagemissilespeed/gravity;
+        NumberFormat nf = new DecimalFormat("####");
+        mMaxrangetext.setText("" +nf.format(maxrange));
+
+    }
+    //funkcja obliczenia maksymalnego zasiegu
     //======przycisk wyboru pocisku nr 111111111111=============
     View.OnClickListener mMissile1 = new View.OnClickListener() {
         @Override
@@ -265,6 +276,9 @@ public class MainActivity extends Activity implements SensorEventListener {
             averagemissilespeed = 294;
             maxmissilerange = 2200;
             targetsettinglayout();
+            calculatemaxrange();
+
+
         }
     };
     //======przycisk wyboru pocisku nr 22222222222=============
@@ -275,6 +289,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             averagemissilespeed = 300;
             maxmissilerange = 2400;
             targetsettinglayout();
+            calculatemaxrange();
+
         }
     };
     //======przycisk wyboru pocisku nr 33333333333=============
@@ -285,6 +301,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             averagemissilespeed = 260;
             maxmissilerange = 2100;
             targetsettinglayout();
+            calculatemaxrange();
+
         }
     };
     //======przycisk wyboru pocisku nr 44444444444=============
@@ -295,6 +313,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             averagemissilespeed = 330;
             maxmissilerange = 2600;
             targetsettinglayout();
+            calculatemaxrange();
+
         }
     };
     //============przycisk kalibracji pochylenia===============
@@ -426,8 +446,6 @@ public class MainActivity extends Activity implements SensorEventListener {
             mLayoutMainmenu.setVisibility(View.VISIBLE);
             averagemissilespeed = 0;
             maxmissilerange = 0;
-            mtargettypeshow.setText(" ");
-            mtrajectorytypeshow.setText(" ");
         }
     };
     //=========przycisk wstecz=============
@@ -436,9 +454,13 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Wybor strzalu ukosnego");
-            mtrajectorytypeshow.setText(R.string.highshot);
+
             curvetype = 1;
             checkifallsettingsok();
+                ((ImageButton) findViewById(R.id.highshot)).setBackgroundResource(R.layout.imagebutton_border);
+                ((ImageButton) findViewById(R.id.lowshot)).setBackgroundResource(R.color.grey);
+
+
         }
     };
     //=========wybor strzalu ukosnego============
@@ -447,20 +469,44 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Wybor strzalu prostego");
-            mtrajectorytypeshow.setText(R.string.lowshot);
+
             curvetype = 2;
             checkifallsettingsok();
+                ((ImageButton) findViewById(R.id.lowshot)).setBackgroundResource(R.layout.imagebutton_border);
+                ((ImageButton) findViewById(R.id.highshot)).setBackgroundResource(R.color.grey);
         }
     };
+    //======funkcja pomocnicza podswietlen przyciskow===========
+
+    void unsellectbuttonsmissiletyp() {
+        if (viewmode==1){
+            ((Button) findViewById(R.id.targettype1)).setTextColor(getResources().getColor(R.color.black));
+            ((Button) findViewById(R.id.targettype2)).setTextColor(getResources().getColor(R.color.black));
+            ((Button) findViewById(R.id.targettype3)).setTextColor(getResources().getColor(R.color.black));
+            ((Button) findViewById(R.id.targettype4)).setTextColor(getResources().getColor(R.color.black));
+
+        } else {
+            ((Button) findViewById(R.id.targettype1)).setTextColor(getResources().getColor(R.color.white));
+            ((Button) findViewById(R.id.targettype2)).setTextColor(getResources().getColor(R.color.white));
+            ((Button) findViewById(R.id.targettype3)).setTextColor(getResources().getColor(R.color.white));
+            ((Button) findViewById(R.id.targettype4)).setTextColor(getResources().getColor(R.color.white));
+        }
+    }
+
+    //======funkcja pomocnicza podswietlen przyciskow===========
+
     //=========wybor strzalu prostego============
     //=========wybor celu PIECHOTA============
     View.OnClickListener mTargettype1 = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Cel Typ nr 1");
-            mtargettypeshow.setText(R.string.infantry);
+
             targettype = 1;
             checkifallsettingsok();
+            //zaznacz przycisk na czerwono/odznacz pozostale przyciski
+            unsellectbuttonsmissiletyp();
+            ((Button) findViewById(R.id.targettype1)).setTextColor(getResources().getColor(R.color.red));
         }
     };
     //=========wybor celu PIECHOTA============
@@ -469,9 +515,12 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Cel Typ nr 2");
-            mtargettypeshow.setText(R.string.base);
+
             targettype = 2;
             checkifallsettingsok();
+            //zaznacz przycisk na czerwono/odznacz pozostale przyciski
+            unsellectbuttonsmissiletyp();
+            ((Button) findViewById(R.id.targettype2)).setTextColor(getResources().getColor(R.color.red));
         }
     };
     //=========wybor celu OBOZ============
@@ -480,9 +529,12 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Cel Typ nr 3\n");
-            mtargettypeshow.setText(R.string.infantryvehicle);
+
             targettype = 3;
             checkifallsettingsok();
+            //zaznacz przycisk na czerwono/odznacz pozostale przyciski
+            unsellectbuttonsmissiletyp();
+            ((Button) findViewById(R.id.targettype3)).setTextColor(getResources().getColor(R.color.red));
         }
     };
     //=========wybor celu POJAZD============
@@ -491,9 +543,12 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Cel Typ nr 4\n");
-            mtargettypeshow.setText(R.string.armoredvehicle);
+
             targettype = 4;
             checkifallsettingsok();
+            //zaznacz przycisk na czerwono/odznacz pozostale przyciski
+            unsellectbuttonsmissiletyp();
+            ((Button) findViewById(R.id.targettype4)).setTextColor(getResources().getColor(R.color.red));
         }
     };
     //=========wybor celu POJAZD UZBROJONY============
@@ -538,15 +593,15 @@ public class MainActivity extends Activity implements SensorEventListener {
     public void getAngle() {
         double angle1,angle2;
         double distancedouble = distance;
-        double averagemissilespeeddouble = averagemissilespeed;
-        double gravity = 9.81f;
 
-        angle1 = Math.toDegrees(Math.atan((Math.pow(averagemissilespeeddouble, 2)
-                + Math.sqrt (Math.pow (averagemissilespeeddouble, 4) -
+
+
+        angle1 = Math.toDegrees(Math.atan((Math.pow(averagemissilespeed, 2)
+                + Math.sqrt (Math.pow (averagemissilespeed, 4) -
                 (gravity * (gravity * Math.pow (distancedouble, 2))))) /
                 (gravity * distancedouble)));
-        angle2 = Math.toDegrees(Math.atan((Math.pow(averagemissilespeeddouble, 2) -
-                Math.sqrt (Math.pow (averagemissilespeeddouble, 4) -
+        angle2 = Math.toDegrees(Math.atan((Math.pow(averagemissilespeed, 2) -
+                Math.sqrt (Math.pow (averagemissilespeed, 4) -
                         (gravity * (gravity * Math.pow (distancedouble, 2))))) / (
                                 gravity * distancedouble)));
 
