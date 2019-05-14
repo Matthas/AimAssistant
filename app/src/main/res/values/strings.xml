@@ -16,8 +16,8 @@
     <string name="armoredvehicle">POJAZD UZBROJONY</string>
     <string name="settingsfinal">WYBRANO USTAWIENIA:</string>
     <string name="next">DALEJ</string>
-    <string name="targetangle">WYMAGANY KĄT</string>
-    <string name="currentangle">AKTUALNY KĄT</string>
+    <string name="targetangle">ŻĄDANY KĄT</string>
+    <string name="currentangle">KĄT PODNIESIENIA LUFY</string>
     <string name="nextshot">NASTEPNY STRZAŁ</string>
     <string name="modedark">Tryb Ciemny</string>
     <string name="modelight">Tryb Jasny</string>

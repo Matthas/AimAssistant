@@ -51,11 +51,9 @@ public class MainActivity extends Activity implements SensorEventListener {
     private int tdetonator;      //czas opoznienia zapalnika [s]
     private int distance;        //odleglosc do celu         [m]
     private int targettype;      //rodzaj celu               [0-9]
-    private int maxmissilerange; //maksymalny zasieg pocisku [m]
     private double averagemissilespeed; //srednia predkosc pocisku  [m/s]
     private float calibratedangle=0; //zmienna potrzebna do kalibracji katu pochylenia
     private int curvetype=0;    //typ strzalu ukosny/prosty
-    private int typeoftarget=0;    //rodzaj celu [1-4]
     private double gravity = 9.81f;  //wartosc przyspieszenia ziemskiego
 
 
@@ -273,8 +271,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Pocisk nr 1\n");
-            averagemissilespeed = 294;
-            maxmissilerange = 2200;
+            averagemissilespeed = 147;
             targetsettinglayout();
             calculatemaxrange();
 
@@ -286,8 +283,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Pocisk nr 2\n");
-            averagemissilespeed = 300;
-            maxmissilerange = 2400;
+            averagemissilespeed = 144;
             targetsettinglayout();
             calculatemaxrange();
 
@@ -298,8 +294,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Pocisk nr 3\n");
-            averagemissilespeed = 260;
-            maxmissilerange = 2100;
+            averagemissilespeed = 140;
             targetsettinglayout();
             calculatemaxrange();
 
@@ -310,8 +305,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Pocisk nr 4\n");
-            averagemissilespeed = 330;
-            maxmissilerange = 2600;
+            averagemissilespeed = 137;
             targetsettinglayout();
             calculatemaxrange();
 
@@ -445,7 +439,6 @@ public class MainActivity extends Activity implements SensorEventListener {
             mLayoutTargetSettings.setVisibility(View.GONE);
             mLayoutMainmenu.setVisibility(View.VISIBLE);
             averagemissilespeed = 0;
-            maxmissilerange = 0;
         }
     };
     //=========przycisk wstecz=============
@@ -578,7 +571,6 @@ public class MainActivity extends Activity implements SensorEventListener {
             targettype = 0;
             curvetype = 0;
             averagemissilespeed = 0;
-            maxmissilerange = 0;
             tdetonator = 0;
             mDistanceIn.setText("");
             mtrajectorytypeshow.setText("");
