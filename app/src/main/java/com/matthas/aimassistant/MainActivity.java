@@ -496,6 +496,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             Log.d(TAG, "Cel Typ nr 1");
 
             targettype = 1;
+            tdetonator = 10;
             checkifallsettingsok();
             //zaznacz przycisk na czerwono/odznacz pozostale przyciski
             unsellectbuttonsmissiletyp();
@@ -510,6 +511,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             Log.d(TAG, "Cel Typ nr 2");
 
             targettype = 2;
+            tdetonator = 6;
             checkifallsettingsok();
             //zaznacz przycisk na czerwono/odznacz pozostale przyciski
             unsellectbuttonsmissiletyp();
@@ -524,6 +526,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             Log.d(TAG, "Cel Typ nr 3\n");
 
             targettype = 3;
+            tdetonator = 1;
             checkifallsettingsok();
             //zaznacz przycisk na czerwono/odznacz pozostale przyciski
             unsellectbuttonsmissiletyp();
@@ -538,6 +541,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             Log.d(TAG, "Cel Typ nr 4\n");
 
             targettype = 4;
+            tdetonator = 3;
             checkifallsettingsok();
             //zaznacz przycisk na czerwono/odznacz pozostale przyciski
             unsellectbuttonsmissiletyp();
