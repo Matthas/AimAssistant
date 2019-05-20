@@ -55,9 +55,10 @@ public class MainActivity extends Activity implements SensorEventListener {
     private float calibratedangle=0; //zmienna potrzebna do kalibracji katu pochylenia
     private int curvetype=0;    //typ strzalu ukosny/prosty
     private double gravity = 9.81f;  //wartosc przyspieszenia ziemskiego
+    double maxrange =0;
 
 
-    private static final int SENSOR_DELAY = 100 * 1000; // 500ms
+    private static final int SENSOR_DELAY = 100 * 1000; // 100ms
     private static final int FROM_RADS_TO_DEGS = -57;
 
     @Override
@@ -259,7 +260,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     //funkcja obliczenia maksymalnego zasiegu
     void calculatemaxrange() {
-        double maxrange;
+
         maxrange = averagemissilespeed*averagemissilespeed/gravity;
         NumberFormat nf = new DecimalFormat("####");
         mMaxrangetext.setText("" +nf.format(maxrange));
@@ -409,7 +410,7 @@ public class MainActivity extends Activity implements SensorEventListener {
               //ostatni polbit bardzo dlugi aby zapobiec bledom
             pattern[pattern_count] = 4000;
             Log.d(TAG, "Przeslanie sygnalu IR\n");
-            mCIR.transmit(36000, pattern);   //[test]wykomentowac dla urzadzenia virtualnego
+           // mCIR.transmit(36000, pattern);   //[test]wykomentowac dla urzadzenia virtualnego
         };
     };//==========wyslanie sygnalu IR==========
 
@@ -421,7 +422,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             //nie rob nic
         } else {
             distance = Integer.parseInt(mDistanceIn.getText().toString());
-            if ( curvetype == 0 || targettype == 0 || distance == 0 ) {
+            if ( curvetype == 0 || targettype == 0 || distance == 0 || (distance >= maxrange)) {
             } else {
                 Button mNext2 = (Button) findViewById(R.id.next2) ;
                 mNext2.setVisibility(View.VISIBLE);
@@ -577,8 +578,6 @@ public class MainActivity extends Activity implements SensorEventListener {
             averagemissilespeed = 0;
             tdetonator = 0;
             mDistanceIn.setText("");
-            mtrajectorytypeshow.setText("");
-            mtargettypeshow.setText("");
             Button mNext2 = (Button) findViewById(R.id.next2) ;
             mNext2.setVisibility(View.GONE);
         }
