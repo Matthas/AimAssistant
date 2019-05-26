@@ -422,7 +422,9 @@ public class MainActivity extends Activity implements SensorEventListener {
             //nie rob nic
         } else {
             distance = Integer.parseInt(mDistanceIn.getText().toString());
-            if ( curvetype == 0 || targettype == 0 || distance == 0 || (distance >= maxrange)) {
+            if ( curvetype == 0 || targettype == 0 || (distance == 0 || distance >= maxrange)) {
+                Button mNext2 = (Button) findViewById(R.id.next2) ;
+                mNext2.setVisibility(View.GONE);
             } else {
                 Button mNext2 = (Button) findViewById(R.id.next2) ;
                 mNext2.setVisibility(View.VISIBLE);
