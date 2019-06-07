@@ -5,7 +5,7 @@
     <string name="missile2">M43I</string>
     <string name="missile3">M385I/M918</string>
     <string name="missile4">M922/M922A1</string>
-    <string name="calibration">Skalibruj Poziom</string>
+    <string name="calibration">Uchwyt niestandardowy</string>
     <string name="backbutton">WSTECZ</string>
     <string name="typedistancetotarged">WPISZ ODLEGŁOŚĆ DO CELU</string>
     <string name="highshot">Strzał za zasłony</string>
@@ -22,4 +22,8 @@
     <string name="modedark">Tryb Ciemny</string>
     <string name="modelight">Tryb Jasny</string>
     <string name="maxrange">Maksymalny zasięg = </string>
+    <string name="nexttarget">Inny Cel</string>
+    <string name="currenthandleangle">Kąt pochylenia uchwytu</string>
+    <string name="setcalibration">Potwierdź</string>
+    <string name="typehandleangle">Wprowadź kąt pochylenia uchwytu</string>
 </resources>

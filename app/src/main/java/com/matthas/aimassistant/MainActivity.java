@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,11 +31,10 @@ public class MainActivity extends Activity implements SensorEventListener {
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
     private float pitch;
-    private float finalpitch;
+    private double finalpitch;
     private double angle=0;
-    TextView mtrajectorytypeshow;
-    TextView mtargettypeshow;
     TextView mDistanceIn;
+    EditText mhandleangle;
     TextView mTargetAngle;
     TextView mIRdatashow;
     TextView mMaxrangetext;
@@ -42,12 +42,13 @@ public class MainActivity extends Activity implements SensorEventListener {
     private SensorManager mgr;
 
     private int viewmode = 0;    //zmienna odpowiedzialna za tryp ciemny[0]/jasny[1]
-    public int freq = 899;       //czas trwania polbitu IR, 899us dla standardu RC5
+    public int freq = 889;       //czas trwania polbitu IR, 899us dla standardu RC5
     private int tdetonator;      //czas opoznienia zapalnika [s]
     private int distance;        //odleglosc do celu         [m]
     private int targettype;      //rodzaj celu               [0-9]
     private double averagemissilespeed; //srednia predkosc pocisku  [m/s]
-    private float calibratedangle=0; //zmienna potrzebna do kalibracji katu pochylenia
+    private double calibratedangle=33.4; //zmienna potrzebna do kalibracji katu pochylenia
+    private double perpendicularlyangle = 90;
     private int curvetype=0;    //typ strzalu ukosny/prosty
     private double gravity = 9.81f;  //wartosc przyspieszenia ziemskiego
     double maxrange =0;
@@ -74,6 +75,10 @@ public class MainActivity extends Activity implements SensorEventListener {
         LinearLayout mLayoutMainmenu = findViewById(R.id.layout_main_menu);
         LinearLayout mLayoutTargetSettings = findViewById(R.id.layout_target_settings);
         LinearLayout mLayoutFinalScreen = findViewById(R.id.layout_final_screen);
+        LinearLayout mLayoutCalibrationScreen = findViewById(R.id.layout_calibration_screen);
+        findViewById(R.id.calibrationbackbutton).setOnClickListener(mBackbuttoncalibration);
+        mhandleangle = (EditText) findViewById(R.id.handleangle);
+        findViewById(R.id.calibrationsetbutton).setOnClickListener(mCalibrationsetbutton);
         findViewById(R.id.missle1).setOnClickListener(mMissile1);
         findViewById(R.id.missle2).setOnClickListener(mMissile2);
         findViewById(R.id.missle3).setOnClickListener(mMissile3);
@@ -82,8 +87,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         findViewById(R.id.backbuttonsettingsmenu).setOnClickListener(mBackbuttonsettingsmenu);
         findViewById(R.id.highshot).setOnClickListener(mHishshot);
         findViewById(R.id.lowshot).setOnClickListener(mLowshow);
-        //mtrajectorytypeshow = (TextView) findViewById(R.id.trajectorytypeshow);
-        //mtargettypeshow = (TextView) findViewById(R.id.targettypeshow);
         mTargetAngle = (TextView) findViewById(R.id.targetangle);
         findViewById(R.id.targettype1).setOnClickListener(mTargettype1);
         findViewById(R.id.targettype2).setOnClickListener(mTargettype2);
@@ -91,10 +94,15 @@ public class MainActivity extends Activity implements SensorEventListener {
         findViewById(R.id.targettype4).setOnClickListener(mTargettype4);
         findViewById(R.id.next2).setOnClickListener(mNext2);
         findViewById(R.id.nextshot).setOnClickListener(mNextshot);
+        findViewById(R.id.nexttarget).setOnClickListener(mNexttarget);
         mIRdatashow = (TextView) findViewById(R.id.IRdatashow);
         mDistanceIn = (EditText) findViewById(R.id.distanceIn);
         mMaxrangetext = (TextView) findViewById(R.id.maxrangetext);
         findViewById(R.id.buttonviewchange).setOnClickListener(mModechange);
+
+        String handleanglestring = Double.toString(calibratedangle);
+        mhandleangle.setText(handleanglestring);
+
         //wywolanie funkcji sprawdzajacej wprowadzenie wszystkich danych przy kazdej zmiane wartosci
         //odleglosci
         mDistanceIn.addTextChangedListener(new TextWatcher() {
@@ -106,6 +114,19 @@ public class MainActivity extends Activity implements SensorEventListener {
             }
             @Override
             public void afterTextChanged(Editable s) {}
+        });
+        //to samo tylko dla wpisywania calibracji kata pochylenia uchwytu
+        mhandleangle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                checkifanglecorrect();
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
         });
         //wlaczenie glownego menu, wylaczenie ekranu ustawien i ekranu finalowego
         mLayoutMainmenu.setVisibility(View.VISIBLE);
@@ -251,6 +272,9 @@ public class MainActivity extends Activity implements SensorEventListener {
         mLayoutMainmenu.setVisibility(View.GONE);
         mLayoutTargetSettings.setVisibility(View.VISIBLE);
     };
+
+
+
     //======funkcja wlaczajaca menu ustawien strzalu============
 
     //funkcja obliczenia maksymalnego zasiegu
@@ -312,10 +336,16 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Calibracja\n");
-            calibratedangle = 0;
-            calibratedangle -= pitch;
+            LinearLayout mLayoutCalibrationScreen = findViewById(R.id.layout_calibration_screen);
+            LinearLayout mLayoutMainMenu = findViewById(R.id.layout_main_menu);
+            mLayoutMainMenu.setVisibility(View.GONE);
+            mLayoutCalibrationScreen.setVisibility(View.VISIBLE);
+
         }
     };
+
+
+
     //==========przyciski menu glownego===============
     //==========przyciski menu glownego===============
     //==========przyciski menu glownego===============
@@ -376,26 +406,26 @@ public class MainActivity extends Activity implements SensorEventListener {
             int[] pattern = {freq, freq, freq * 2, freq, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850, 850};
             int pattern_count = 4;
             Log.d(TAG, "Zamiana ramki na mikrosendy\n");
-            for (int i = 3; i <= 20; i++) {
-                if (prepattern[i] == 0) {
+            for (int i = 3; i <= 20; i++) {  //kolejne bity
+                if (prepattern[i] == 0) {   //aktualny bit = 0
                     //both are false
-                    if (prepattern[i - 1] == 0) {
+                    if (prepattern[i - 1] == 0) {   //jezeli stary bit = 0
                         pattern[pattern_count] = freq;
                         pattern_count += 1;
                         pattern[pattern_count] = freq;
                         pattern_count += 1;
-                    } else {
+                    } else {    //jezeli stary bit = 1
                         pattern[pattern_count - 1] = freq * 2;
                         pattern[pattern_count] = freq;
                         pattern_count += 1;
                     }
-                } else {
-                    if (prepattern[i - 1] == 1) {
+                } else {    //aktualny bit = 1
+                    if (prepattern[i - 1] == 1) {   //stary bit = 1
                         pattern[pattern_count] = freq;
                         pattern_count += 1;
                         pattern[pattern_count] = freq;
                         pattern_count += 1;
-                    } else {
+                    } else { //stary bit = 0
                         pattern[pattern_count - 1] = freq * 2;
                         pattern[pattern_count] = freq;
                         pattern_count += 1;
@@ -405,7 +435,7 @@ public class MainActivity extends Activity implements SensorEventListener {
               //ostatni polbit bardzo dlugi aby zapobiec bledom
             pattern[pattern_count] = 4000;
             Log.d(TAG, "Przeslanie sygnalu IR\n");
-           // mCIR.transmit(36000, pattern);   //[test]wykomentowac dla urzadzenia virtualnego
+            mCIR.transmit(36000, pattern);   //[test]wykomentowac dla urzadzenia virtualnego
         };
     };//==========wyslanie sygnalu IR==========
 
@@ -575,6 +605,9 @@ public class MainActivity extends Activity implements SensorEventListener {
             averagemissilespeed = 0;
             tdetonator = 0;
             mDistanceIn.setText("");
+            ((ImageButton) findViewById(R.id.highshot)).setBackgroundResource(R.color.grey);
+            ((ImageButton) findViewById(R.id.lowshot)).setBackgroundResource(R.color.grey);
+            unsellectbuttonsmissiletyp();
             Button mNext2 = (Button) findViewById(R.id.next2) ;
             mNext2.setVisibility(View.GONE);
         }
@@ -641,6 +674,23 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
     //====pobranie danych pochylenia telefonu============
 
+    //===ponowny strzal do tego samego celu============
+    void nextshot() {
+        Log.d(TAG, "Ponowny strzal\n");
+        LinearLayout mLayoutTargetSettings = findViewById(R.id.layout_target_settings);
+        LinearLayout mLayoutFinalScreen = findViewById(R.id.layout_final_screen);
+        mLayoutFinalScreen.setVisibility(View.GONE);
+        mLayoutTargetSettings.setVisibility(View.VISIBLE);
+    };
+
+    View.OnClickListener mNexttarget = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            nextshot();
+        }
+    };
+
+    //===ponowny strzal do tego samego celu============
 
     //=====pokazanie aktualnego pochylenia telefonu==========
     private void update(float[] vectors) {
@@ -655,7 +705,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         SensorManager.getOrientation(adjustedRotationMatrix, orientation);
         pitch = orientation[1] * FROM_RADS_TO_DEGS;
         NumberFormat nf = new DecimalFormat("##.#");
-        finalpitch = pitch + calibratedangle;
+        finalpitch = pitch + calibratedangle + perpendicularlyangle;
         //Textview na ekranie startowym
         ((TextView)findViewById(R.id.CurrentAngleMain)).setText(" "+nf.format(finalpitch));
         //Textview na ekranie ustawien
@@ -672,4 +722,68 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
     }
     //=====pokazanie aktualnego pochylenia telefonu==========
+
+
+    //=======ekran calibracji========
+    //=======ekran calibracji========
+    //=======ekran calibracji========
+    //=======ekran calibracji========
+
+    View.OnClickListener mBackbuttoncalibration = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.d(TAG, "Powrot z calibracji\n");
+            LinearLayout mLayoutMainmenu = findViewById(R.id.layout_main_menu);
+            LinearLayout mLayoutCalibrationScreen = findViewById(R.id.layout_calibration_screen);
+            mLayoutCalibrationScreen.setVisibility(View.GONE);
+            mLayoutMainmenu.setVisibility(View.VISIBLE);
+        }
+    };
+
+    void checkifanglecorrect() {
+            Log.d(TAG, "check Calibration Angle");
+            if (TextUtils.isEmpty(mhandleangle.getText().toString())) {
+                //nie rob nic
+            } else {
+                double calibratedangleCHECK = Double.parseDouble(mhandleangle.getText().toString());
+                if ( calibratedangleCHECK > 90 || calibratedangleCHECK < 0) {
+                    Button mCalibrationbuttonset = (Button) findViewById(R.id.calibrationsetbutton) ;
+                    mCalibrationbuttonset.setVisibility(View.GONE);
+                    Toast.makeText(this, "Kat musi się zawierac w 90°", Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(this,"Kat musi się zawierac w 90°", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP, 0, 0);
+                    toast.show();
+                } else {
+                    Button mCalibrationbuttonset = (Button) findViewById(R.id.calibrationsetbutton) ;
+                    mCalibrationbuttonset.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+        View.OnClickListener mCalibrationsetbutton = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calibratedangle = Double.parseDouble(mhandleangle.getText().toString());
+                LinearLayout mLayoutMainmenu = findViewById(R.id.layout_main_menu);
+                LinearLayout mLayoutCalibrationScreen = findViewById(R.id.layout_calibration_screen);
+                mLayoutCalibrationScreen.setVisibility(View.GONE);
+                mLayoutMainmenu.setVisibility(View.VISIBLE);
+            }
+        };
+
+
+    //=======ekran calibracji========
+    //=======ekran calibracji========
+    //=======ekran calibracji========
+    //=======ekran calibracji========
+
+
+
+
+
+
+
+
+
+
+
 }//koniec programu
