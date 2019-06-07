@@ -38,6 +38,8 @@ public class MainActivity extends Activity implements SensorEventListener {
     TextView mTargetAngle;
     TextView mIRdatashow;
     TextView mMaxrangetext;
+    TextView mCurrenthandleangle;
+    TextView mCurrenthandleangletext;
     ConsumerIrManager mCIR;
     private SensorManager mgr;
 
@@ -78,6 +80,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         LinearLayout mLayoutCalibrationScreen = findViewById(R.id.layout_calibration_screen);
         findViewById(R.id.calibrationbackbutton).setOnClickListener(mBackbuttoncalibration);
         mhandleangle = (EditText) findViewById(R.id.handleangle);
+        mCurrenthandleangle = (TextView) findViewById(R.id.currenthandleangle);
         findViewById(R.id.calibrationsetbutton).setOnClickListener(mCalibrationsetbutton);
         findViewById(R.id.missle1).setOnClickListener(mMissile1);
         findViewById(R.id.missle2).setOnClickListener(mMissile2);
@@ -102,6 +105,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         String handleanglestring = Double.toString(calibratedangle);
         mhandleangle.setText(handleanglestring);
+        mCurrenthandleangle.setText(handleanglestring);
 
         //wywolanie funkcji sprawdzajacej wprowadzenie wszystkich danych przy kazdej zmiane wartosci
         //odleglosci
@@ -193,6 +197,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             ((Button) findViewById(R.id.targettype4)).setTextColor(getResources().getColor(R.color.black));                                         //target 4 text
             ((TextView) findViewById(R.id.maxrangetext)).setTextColor((getResources().getColor(R.color.black)));
             ((TextView) findViewById(R.id.maxrangestatictext)).setTextColor((getResources().getColor(R.color.black)));
+            ((TextView) findViewById(R.id.currentangleangletext)).setTextColor((getResources().getColor(R.color.black)));
+            ((TextView) findViewById(R.id.currenthandleangle)).setTextColor((getResources().getColor(R.color.black)));
             //targetsettings
 
             //final screen
@@ -239,6 +245,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             ((Button) findViewById(R.id.targettype4)).setTextColor(getResources().getColor(R.color.white));                                         //target 4 text
             ((TextView) findViewById(R.id.maxrangetext)).setTextColor((getResources().getColor(R.color.white)));
             ((TextView) findViewById(R.id.maxrangestatictext)).setTextColor((getResources().getColor(R.color.white)));
+            ((TextView) findViewById(R.id.currentangleangletext)).setTextColor((getResources().getColor(R.color.white)));
+            ((TextView) findViewById(R.id.currenthandleangle)).setTextColor((getResources().getColor(R.color.white)));
             //targetsettings
 
             //final screen
