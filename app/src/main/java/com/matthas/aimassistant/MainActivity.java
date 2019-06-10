@@ -49,8 +49,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     private int distance;        //odleglosc do celu         [m]
     private int targettype;      //rodzaj celu               [0-9]
     private double averagemissilespeed; //srednia predkosc pocisku  [m/s]
-    private double calibratedangle=33.4; //zmienna potrzebna do kalibracji katu pochylenia
-    private double perpendicularlyangle = 90;
+    private double calibratedangle=33; //zmienna potrzebna do kalibracji katu pochylenia
     private int curvetype=0;    //typ strzalu ukosny/prosty
     private double gravity = 9.81f;  //wartosc przyspieszenia ziemskiego
     double maxrange =0;
@@ -443,7 +442,7 @@ public class MainActivity extends Activity implements SensorEventListener {
               //ostatni polbit bardzo dlugi aby zapobiec bledom
             pattern[pattern_count] = 4000;
             Log.d(TAG, "Przeslanie sygnalu IR\n");
-            mCIR.transmit(36000, pattern);   //[test]wykomentowac dla urzadzenia virtualnego
+            //mCIR.transmit(36000, pattern);   //[test]wykomentowac dla urzadzenia virtualnego
         };
     };//==========wyslanie sygnalu IR==========
 
@@ -597,7 +596,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     //=========ustawienie ostatniego ekranu=============
 
     //==========================przycisk nastepnego strzalu=======================
-    View.OnClickListener mNextshot = new View.OnClickListener() {
+    View.OnClickListener mNexttarget = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Nastepny strzal\n");
@@ -640,15 +639,15 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         if (curvetype == 1) {
             if (angle1 >= angle2) {
-                angle = angle1;
-            } else {
                 angle = angle2;
+            } else {
+                angle = angle1;
             };
         } else if (curvetype ==2){
             if (angle1 <= angle2) {
-                angle = angle1;
-            } else {
                 angle = angle2;
+            } else {
+                angle = angle1;
             };
         };
         NumberFormat nf = new DecimalFormat("##.#");
@@ -691,7 +690,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         mLayoutTargetSettings.setVisibility(View.VISIBLE);
     };
 
-    View.OnClickListener mNexttarget = new View.OnClickListener() {
+    View.OnClickListener mNextshot = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             nextshot();
@@ -713,7 +712,8 @@ public class MainActivity extends Activity implements SensorEventListener {
         SensorManager.getOrientation(adjustedRotationMatrix, orientation);
         pitch = orientation[1] * FROM_RADS_TO_DEGS;
         NumberFormat nf = new DecimalFormat("##.#");
-        finalpitch = pitch + calibratedangle + perpendicularlyangle;
+        finalpitch = pitch - calibratedangle;
+        finalpitch *= -1;
         //Textview na ekranie startowym
         ((TextView)findViewById(R.id.CurrentAngleMain)).setText(" "+nf.format(finalpitch));
         //Textview na ekranie ustawien
@@ -775,6 +775,8 @@ public class MainActivity extends Activity implements SensorEventListener {
                 LinearLayout mLayoutCalibrationScreen = findViewById(R.id.layout_calibration_screen);
                 mLayoutCalibrationScreen.setVisibility(View.GONE);
                 mLayoutMainmenu.setVisibility(View.VISIBLE);
+                String handleanglestring = Double.toString(calibratedangle);
+                mCurrenthandleangle.setText(handleanglestring);
             }
         };
 
