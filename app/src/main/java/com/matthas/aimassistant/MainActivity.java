@@ -1,6 +1,7 @@
 package com.matthas.AimAssistant;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.hardware.ConsumerIrManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -64,6 +65,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         //sensory pomiaru pochylenia
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // IR blaster
         mCIR = (ConsumerIrManager) getSystemService(Context.CONSUMER_IR_SERVICE);
@@ -159,6 +161,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             viewmodeswitch();
         }
     };
+
 
     //==============funkcja odpowiedzialna za tryp Ciemny/jasny===================
     void viewmodeswitch() {
@@ -316,6 +319,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         }
     };
+
     //======przycisk wyboru pocisku nr 33333333333=============
     View.OnClickListener mMissile3 = new View.OnClickListener() {
         @Override
